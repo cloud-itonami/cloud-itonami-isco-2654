@@ -56,6 +56,28 @@ render-plan builder and command builders. The private reference implementation
 is gftdcojp's `ai-gftd-dougaka` actor (ADR-2607023000: コードは kotoba-lang、
 職能は cloud-itonami-isco、商売は gftdcojp).
 
+## Reference actor (`:maturity :implemented`)
+
+Full itonami Actor pattern (like
+[`cloud-itonami-isco-6130`](https://github.com/cloud-itonami/cloud-itonami-isco-6130) /
+[`-2652`](https://github.com/cloud-itonami/cloud-itonami-isco-2652)): a real
+[`kotoba-lang/langgraph`](https://github.com/kotoba-lang/langgraph)
+`StateGraph` with Advisor and Governor as distinct nodes and human-in-the-loop
+interrupt/resume. The governor's timeline sanity check builds the **actual
+ffmpeg render plan** via
+[`douga.ffmpeg`](https://github.com/kotoba-lang/douga) (kotoba-lang craft
+lib, ADR-2607023000), and assemble commits carry the built plan so what was
+approved is exactly what renders.
+
+- HARD → `:hold`: unregistered production, non-`:propose` effect.
+- ESCALATE → `:request-approval` (human-signed): publish without subject
+  consent + location/rights clearance, assemble whose render plan has zero
+  segments, low confidence.
+
+```bash
+clojure -M:test
+```
+
 See [`docs/business-model.md`](docs/business-model.md) and
 [`docs/operator-guide.md`](docs/operator-guide.md).
 

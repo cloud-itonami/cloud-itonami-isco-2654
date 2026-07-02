@@ -1,0 +1,13 @@
+{:paths ["src"]
+ :deps {io.github.kotoba-lang/langgraph
+        {:git/sha "5b4e5e70837b849b14b6a5800894e3be202ad5fa"}
+        ;; douga craft lib (ADR-2607023000) — the governor sanity-checks the
+        ;; timeline by building the actual ffmpeg render plan, and assemble
+        ;; commits carry the built plan.
+        io.github.kotoba-lang/douga
+        {:git/sha "8a40c0a86ae51bca71bf5604782a1b165cd6e1d3"}}
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps {io.github.cognitect-labs/test-runner
+                      {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+         :main-opts ["-m" "cognitect.test-runner"]}}}
