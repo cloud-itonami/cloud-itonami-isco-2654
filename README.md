@@ -75,7 +75,7 @@ approved is exactly what renders.
   segments, low confidence.
 
 ```bash
-clojure -M:test
+kbb -M:test
 ```
 
 See [`docs/business-model.md`](docs/business-model.md) and
