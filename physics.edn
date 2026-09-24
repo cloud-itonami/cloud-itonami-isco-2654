@@ -1,0 +1,42 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a camera/gimbal robot performs physical camera
+;; moves, lighting-rig adjustment and set handling for film, stage and related
+;; directors and producers (ISCO 2654). Its physical work is a dolly move with
+;; a camera on a raised column, lifting a camera package onto a gimbal head,
+;; and the heating of a plywood set flat standing near a hot lamp.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-2654"
+ :cases
+ [{:id :dolly-move-stop
+   :kind :transport
+   :procedure "camera dolly with a raised column tracks along the set and stops on its mark"
+   :params {:mass-kg 120.0 :payload-kg 15.0 :distance-m 6.0 :v-max-mps 0.8 :a-max-mps2 0.5
+            :drive-force-n 400.0 :crr 0.01 :cog-height-m 1.10 :support-half-length-m 0.45}
+   :sweep {:param :brake-decel-mps2 :values [0.5 1.0 1.5 2.0 2.5]}
+   :quantity :min-tipover-margin
+   :limit {:min 0.4 :basis "estimate: keep 40 % of the static tip-over reserve so a hard stop on the mark cannot rock the column"}
+   :boundary {:lo 0.1 :hi 5.0}}
+  {:id :camera-onto-gimbal
+   :kind :manipulator
+   :procedure "arm lifts a camera package (body, lens, matte box) from the cart and seats it on the gimbal head"
+   :params {:l1-m 0.55 :l2-m 0.50 :m1-kg 6.0 :m2-kg 4.0
+            :from [0.60 0.10] :to [0.30 0.80] :duration-s 3.0 :steps 500}
+   :sweep {:param :payload-kg :values [1.0 3.0 5.0 8.0 12.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 120.0 :basis "estimate: continuous shoulder torque of a medium collaborative arm (~10-12 kg payload class) at this reach"}
+   :boundary {:lo 0.1 :hi 40.0}}
+  {:id :set-flat-near-lamp
+   :kind :thermal
+   :procedure "18 mm plywood set flat stands next to a hot lamp for an hour of shooting; the lamp-side face heats"
+   :params {:thickness-m 0.018 :conductivity-w-mk 0.13 :density-kg-m3 550.0 :specific-heat-j-kgk 1300.0
+            :t0-c 25.0 :h-front-w-m2k 15.0 :t-back-ambient-c 25.0 :h-back-w-m2k 8.0
+            :threshold-c 100.0 :duration-s 3600.0 :nodes 13}
+   :sweep {:param :t-hot-c :values [80.0 120.0 160.0 200.0 250.0]}
+   :quantity :final-front-c
+   :limit {:max 120.0 :basis "estimate: keep the lamp-side face of timber well below the range where long exposure starts to char wood (roughly above 120 C); lamp-side air temperature stands in for the radiant load"}
+   :boundary {:lo 30.0 :hi 400.0}}]}
