@@ -5,7 +5,7 @@
   downstream of `:advise` — the Advisor has no notion of production
   provenance or consent/rights clearance, so this MUST be a separate system
   able to reject a proposal (itonami actor pattern, per ADR-2607011000 /
-  CLAUDE.md Actors section).
+  AGENTS.md Actors section).
 
   The timeline sanity check is NOT bespoke: it builds the actual render
   plan with `douga.ffmpeg/build-render-plan` from the kotoba-lang `douga`
